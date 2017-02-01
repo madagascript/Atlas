@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar>
+  	<span 
+      (click)="viewCtrl.dismiss()"
+      class="text-success glyphicon glyphicon-remove marco">
+    </span>    
+    <ion-title>
+    	<span class="text-danger">{{leccion.titulo}}</span>
+    </ion-title>     
+    
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<h5 (click)="objetivos.hidden = !objetivos.hidden" class="marco">
+<span class="text-success">objetivos</span>
+</h5>
+<div #objetivos hidden>
+	<ol>
+		<li *ngFor="let o of leccion.objetivos">{{o.titulo}}<br>
+		<div [innerHTML]="o.descripcion"></div>
+		</li>	
+	</ol>
+</div>
+
+
+	<h5 (click)="bibliografia.hidden = !bibliografia.hidden" class="marco">
+		<span class="text-success">bibliografía</span>
+	</h5>
+	<div #bibliografia hidden>
+		<ol>
+			<li *ngFor="let link of leccion.bibliografia">
+				<a href="{{link.url}}" target="_blank">{{link.titulo}}</a>
+			</li>
+		</ol>
+	</div>
+
+</ion-content>

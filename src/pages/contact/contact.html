@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      déjame un mensaje
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<div style="padding: 10px 10px 10px 10px">
+
+  <input [(ngModel)]="text" placeholder="tu mensaje" class="form-control" />
+  <br>
+  <p class="text-success">este mensaje se guardará en Ionic DB</p>
+  <p class="text-success">recuerda dejarme un medio de contacto si quieres que te responda</p>
+  <button (click)="sendMessage(text)" class="btn btn-success">enviar</button>
+</div>
+
+<div *ngIf="debug">
+	<h4>mensaje privado</h4>
+	<h4>texto</h4>
+	<textarea rows="10" cols="30"
+ 		[(ngModel)]="mensaje">
+	</textarea>
+	<span class="glyphicon glyphicon-arrow-down marco"
+		(click)="txtToB64()"></span>
+	<span class="glyphicon glyphicon-arrow-up marco"
+		(click)="b64ToTxt()"></span>
+	<div [innerHtml]="mensaje"></div>
+	<h4>base64</h4>
+	<textarea rows="10" cols="30"
+ 		[(ngModel)]="outb64">
+	</textarea>
+</div>	
+
+
+
+</ion-content>
