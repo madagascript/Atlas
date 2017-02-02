@@ -1,17 +1,25 @@
 <ion-header>	
   <ion-navbar>
     <ion-title>
-      estamos trabajando en esto
-      <span 
-      	(click)="apuntes.hidden = !apuntes.hidden"
-      	class="marco text-center glyphicon glyphicon-question-sign">
-      </span>
+      blog - comentarios
     </ion-title>
   </ion-navbar>  
 </ion-header>
 
 <ion-content padding>
-<!-- subir leccion desde archivo -->
+
+
+
+
+
+
+<!-- 
+// subir leccion desde archivo 
+// de momento desactivado:
+// a) preparo sesión con iokos.byviolet.es
+// b) la subo en JSON con Futon en Smileupps
+// c) replico en Getafe
+
 	<div *ngIf="newlesson">
 		<p>cargada ok la lección 
 		<span class="h4 text-success">{{newlesson.titulo}}</span>	
@@ -27,65 +35,7 @@
  			type="file"  			
  			(change)="uploadDb($event)"/>
  	</div>
-
-
-	<div #apuntes hidden>
-	<h4>apuntes de desarrollo</h4>
-	
-	<h4 (click)="desktop.hidden = !desktop.hidden"
-		class="marco">
-		pruebas en desktop
-	</h4>
-	<div #desktop hidden>
-		<p>la conexión con Couchdb en contenedor va bien, tiene CORS activado y no protesta</p>
-		<p>la he probado vía <code>this.oikSer.httpGetAsync()</code> para evitar el fallo del <code>http.get()</code> de Angular 2</p>
-		<p>la conexión con banco de lecciones de gitlab no va por CORS; pendiente leer <a href="http://blog.ionic.io/handling-cors-issues-in-ionic/">esto</a></p>
-	</div>
-
-	<h4 (click)="ionicView.hidden = !ionicView.hidden"
-		class="marco">
-		pruebas en móvil con ionic view
-	</h4>
-	<div #ionicView hidden>	
-		<p>no va contra CouchDb en contenedor porque sólo el desktop sabe dónde está couch</p>
-		<p>¿abrir un puerto del router a couchdb?</p>
-		<p>¿usar la bd de ionic? (sí, para eso está)</p>
-	</div>
-	</div>
-
-	<h4>timeline</h4>
-	<li>martes 31-01-2017
-	<p>encuentro un servidor couchdb 1.6 gratis en <a href="http://smileupps.com" target="_blank"><b>Smileupps</b></a> así que cambia el planteamiento de la aplicación de ionic</p>
-
-	<p>la app en ionic.io lee datos de Smileupps mientras caduca la licencia, al menos puedo probar Ionic View y la APK en condiciones</p>
-
-	</li>
-
-	<li>lunes 30-01-2017
-			<p>subir a Ionic DB un JSON de disco generado con Oikos 2: 
-				<span class="text-success">OK</span>, es este botón 
-				<span (click)="fileBanco.click()"
- 					class="glyphicon glyphicon-level-up marco text-success"
- 					title="cargar lección desde tu equipo"></span>
- 		  	no funciona en Ionic View, como la mayoría de acceso a datos externos, hay que investigar si está reportado, si hay solución y si también pasa en la app empaquetada</p>
- 		 <p>como no funciona en I-View no es posible subir lecciones desde el móvil, pero sí desde la aplicación web, sea desde desktop o desde móvil</p>
-	</li>
-
-	<li>dom 29-01-2017
-		<ol type="a">		
-			<li>acabar de definir el mapa de la app</li>
-				<p>cómo se preparan lecciones, cómo se agrupan, cómo se suben a Ionic DB, etc.</p>
-			<li>estructurar lecciones</li>
-				<p>una Ionic DB por cada UF, por ejemplo; o un leccion.id más leccion.capitulo</p>	
-				
-			<li>hacer un shell para subir a oikos-2 en gitlab los archivos relevantes</li>		
-				<p>básicamente las dos carpetas que hay ahora: <code>app</code> y <code>pages</code></p>
-
-			<li>funcionará <code>ng serve</code> en la carpeta de ionic 2?</li>
-				<p>en principio, probado a pelo, no funciona</p>
-		</ol>	
-	</li>
-
+-->
 
 
 </ion-content>
