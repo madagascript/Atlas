@@ -14,26 +14,18 @@
 
 
 <div #listPosts>
-<h4>artículos</h4>
-
-	<div>
-		<ol>
-			<div *ngFor="let p of posts.rows" 
-				class="marco"
+<h4>últimas publicaciones</h4>
+	<div>		
+			<div *ngFor="let p of posts.rows" 				
 			  (click)="leerMas.hidden = !leerMas.hidden">
 				<span class="text-success h3">{{p.value}}</span>
 				<p>({{p.key}})</p>
-				
+			
 				<div #leerMas hidden>
 					<div [innerHtml]="p.doc.texto"></div>
 				</div>
-				
-
-
-
-
 			</div>
-		</ol>
+		
 	</div>
 </div>
 
