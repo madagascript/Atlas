@@ -2,18 +2,87 @@
   <ion-navbar>
     <ion-title>
       blog - comentarios
+      <span class="glyphicon glyphicon-pencil text-success marco"
+      	(click)="editPost.hidden = !editPost.hidden; 
+      					 listPosts.hidden = !listPosts.hidden">
+      </span>
     </ion-title>
   </ion-navbar>  
 </ion-header>
 
 <ion-content padding>
 
-<div #editPost>
-<span class="btn btn-sucess"
- (click)="publicar()"	>abk</span>
+
+<div #listPosts>
+<h4>artículos</h4>
+
+	<div>
+		<ol>
+			<div *ngFor="let p of posts.rows" 
+				class="marco"
+			  (click)="leerMas.hidden = !leerMas.hidden">
+				<span class="text-success h3">{{p.value}}</span>
+				<p>({{p.key}})</p>
+				
+				<div #leerMas hidden>
+					<div [innerHtml]="p.doc.texto"></div>
+				</div>
+				
+
+
+
+
+			</div>
+		</ol>
+	</div>
 </div>
-<pre>{{msg}}</pre>
-<pre>{{dataserver}}</pre>
+
+
+<div #editPost hidden>
+<h4>nuevo post
+	<span class="glyphicon glyphicon-cog marco text-danger" 
+		(click)="idRev.hidden = !idRev.hidden">
+	</span>
+</h4>
+	<div #idRev hidden="true" class="marco row">
+		<div class="col-xs-6">
+			<input [(ngModel)]="post._id" 
+				class="form-control"
+				placeholder="id" />
+		</div>	
+		<div class="col-xs-6">
+			<span (click)="getPost(post._id); idRev.hidden = true" 
+				class="glyphicon glyphicon-download-alt marco text-success"></span>
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col-xs-4">
+			<input [(ngModel)]="post.fecha" class="form-control" placeholder="fecha (aaaa-mm-dd)" />
+		</div>
+
+		<div class="col-xs-8">
+			<input [(ngModel)]="post.titulo" class="form-control" placeholder="titulo" />
+		</div>
+
+	</div>
+	<br>
+	<div class="row padd">
+		<textarea [(ngModel)]="post.texto" 
+			class="form-control" 
+			placeholder="redacta el artículo en HTML"
+			rows="20"></textarea>
+	</div>
+
+	<div class="row padd">
+		<div [innerHtml]="post.texto" ></div>
+	</div>
+
+	<span class="btn btn-success" (click)="publicar(post)"	>publicar</span>
+</div>
+
+
 <!-- 
 // subir leccion desde archivo 
 // de momento desactivado:

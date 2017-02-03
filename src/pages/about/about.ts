@@ -3,43 +3,45 @@ import { NavController } from 'ionic-angular';
 import { OikosService } from '../../app/oikos.service';
 
 
-const devlocal = true;
-const dataserver = 
-  devlocal ? 
-  'http://192.168.1.128:5984/ifcd0112/' : 
-  'https://couchdb-52d18a.smileupps.com/ifcd0112/';
-const ejercicios = dataserver + '_design/app/_view/blog-date'
+const localServer = 'http://192.168.1.128:5984/ifcd0112/'
+const remoteServer = 'https://couchdb-52d18a.smileupps.com/ifcd0112/'
+const devlocal = false;
+const dataserver = devlocal ? localServer : remoteServer
+const viewPostsFecha = '_design/app/_view/posts-fecha?include_docs=true&descending=true'
 
 @Component({
   selector: 'page-about',
   templateUrl: 'about.html',
   providers: [ OikosService ],
 })
-export class AboutPage implements OnInit {
-	lessons: any;    
-  newlesson: any;
+export class AboutPage implements OnInit {	
   msg: any;
-  post: any = {
-    fecha: '2017-02-03',
-    titulo: 'prueba grabando post',
-    texto: 'en un lugar de la mancha',
-    bibliografia: []
-  }
+  post: any = { };
+  posts: any = [];
 
   constructor(public navCtrl: NavController, public oS: OikosService) { }
-  ngOnInit(){ }    
+  ngOnInit(){ this.getPosts()}    
 
-  publicar(){
-    this.oS.post(dataserver, this.post).subscribe(
-      (data) => console.log(data),
-      (err) => console.log(err),
-      );
+  getPosts(){
+    let url = dataserver + viewPostsFecha
+    this.oS.get(url).subscribe( data => this.posts = data )
+  }
+
+  getPost(id){
+    let url = dataserver + id
+    this.oS.get(url).subscribe( data => this.post = data )
+  }
+  publicar(obj){
+    obj.class = 'post'
+    this.oS.post(dataserver, obj).subscribe(
+      (data) => { 
+        console.log(data)       
+        this.msg = data 
+        this.getPosts()
+      });
     
   }
-
-  uploadDb(e){
-    this.oS.fileToJson(e, data => this.newlesson = data)
-  }
+  
 }
 
 
