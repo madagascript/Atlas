@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Stitch Basics</title>
+</head>
+
+<body onload="displayCommentsOnLoad()">
+  <h2>Stitch Basics</h2>
+  <p>copiado del tutorial de mongodb.com</p>
+  <h3 id="tuID"></h3>
+  <div id="comments"></div>
+  <hr>
+  Add comment:
+  <input id="new_comment"><input type="submit" onClick="addComment()">
+  <pre id="debug"></pre>
+</body>
+</html>
+
+<script src="https://s3.amazonaws.com/stitch-sdks/js/library/v3/stable/stitch.min.js"></script>
+<script src="./index.js"></script>
+
