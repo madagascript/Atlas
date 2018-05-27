@@ -1,17 +1,17 @@
 
 // uso: 
-// nodemon server.js user password port
+// nodemon server.js AtlasUrl port
 const express = require('express');
 const bodyParser = require('body-parser')
 const mongo = require('mongodb') 
 const app = express();
 const MongoClient = mongo.MongoClient;
-const url = `mongodb+srv://${process.argv[2]}:${process.argv[3]}@cluster0-6m3ok.mongodb.net/test`;
-const port = process.argv[4] ? process.argv[4] : 3000
+const url = process.argv[2]
+const port = process.argv[3] ? process.argv[3] : 3000
 const fs = require('fs');
 const {exec} = require('child_process');
 
-exec('df -h', (error, stdout, stderr) => { console.log(`stdout: ${stdout}`); })
+// exec('df -h', (error, stdout, stderr) => { console.log(`stdout: ${stdout}`); })
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -62,11 +62,6 @@ app.get('/corregir', (request, response) => {
   // http://localhost:3000/corregir?uf1=1234a678-0&uf2=1234567890...
 
   let uf1 = Array.from('aaaaaaaaaa'), uf2 = Array.from('bbbbbbbbbb'), uf3 = Array.from('aaaaabbbbb');
-  // let uf1 = [], uf2 = [], uf3 = [];
-  // getUf('uf1465', (data) => { uf1 = Array.from(data.repuestas)  });
-  // getUf('uf1466', (data) => { uf2 = Array.from(data.repuestas)  });
-  // getUf('uf1467', (data) => { uf3 = Array.from(data.repuestas)  });
-
   console.log(uf1,uf2,uf3)
   let examenUf1 = Array.from(request.query.uf1), 
       examenUf2 = Array.from(request.query.uf2),
@@ -114,8 +109,8 @@ app.get('/:db/:collection/:_id', (request, response, next) => {
   });  
 });
 
-app.post('/updateMany', (request, response) => {
-  console.log('actualizando objeto: ', request.body) 
+app.post('/updateMany', (request, response) => {  
+  console.log('actualizando colección: ', request.body) 
   let db = request.body.db; delete request.body.db;
   let collection = request.body.collection; delete request.body.collection;      
   MongoClient.connect(url, function(err, client) {

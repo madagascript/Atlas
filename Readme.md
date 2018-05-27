@@ -5,5 +5,5 @@
 </p>
 
 <p>
-  para poder usarlo debes tener un usuario en <a href="https://www.mongodb.com/">MongoDb Atlas</a> y un cluster activo; 
+  para poder usarlo debes tener un usuario en <a href="https://www.mongodb.com/">MongoDb Atlas</a> con un cluster activo, y apuntar el server.js a tu cluster
 </p>
