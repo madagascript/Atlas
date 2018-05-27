@@ -31,7 +31,7 @@ class MongoDoc {
   setProp(){    
     let cliente = JSON.parse($('#cliente').text())
     cliente[$('#nombreProp').text()] = $('#newPropValue').val();
-    $('#cliente').text( JSON.stringify(cliente) )
+    $('#cliente').text( JSON.stringify(cliente, undefined, 2) )
   }
   showProp(){
     $('#edicionProps').show();
@@ -155,7 +155,7 @@ class ProtoLink {
     $('#collection').text(collection);
   }
   draw(){
-    $('#cliente').text( JSON.stringify(this) );
+    $('#cliente').text( JSON.stringify(this, undefined, 2) );
     new MongoDoc().showProps()
   }
 }
@@ -164,7 +164,7 @@ function changeTextHtml(){
   $('#showHtml').html( $('#textHtml').val() )
   let doc = JSON.parse( $('#cliente').text() )
   doc.html = btoa($('#textHtml').val())
-  $('#cliente').text( JSON.stringify(doc))
+  $('#cliente').text( JSON.stringify(doc, undefined, 2))
 }
 
 /*
