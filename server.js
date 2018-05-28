@@ -84,7 +84,7 @@ app.get('/:db/:collection', function (request, response) {
   MongoClient.connect(url, function(err, client) {       
     client.db(request.params.db).collection(request.params.collection)
     .find()    
-    .sort({nombre: 1, fecha: 1})
+    .sort({})
     .toArray( (err, results)=>{
       console.log(err)
       response.send(JSON.stringify(results));

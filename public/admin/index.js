@@ -11,7 +11,7 @@ b) el server no ve el request.body en peticiones $.get(), así que $.post() si h
 
 
 
-const defaultDb = 'curso', defaultCollection = 'alumnos'
+const defaultDb = 'domingo', defaultCollection = 'email'
 
 
 /* clases de la aplicación */

@@ -24,6 +24,7 @@ function wordpress(){
 function mean(){
   cd /tmp
   wget https://nodejs.org/dist/v8.11.1/node-v8.11.1-linux-x64.tar.xz
+  tar xf node-v8.11.1-linux-x64.tar.xz
   cd node-v8.11.1-linux-x64
   rsync -av bin /usr/local/
   rsync -av lib /usr/local/
