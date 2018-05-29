@@ -210,9 +210,12 @@ app.post('/test', (req, res) => {
     console.log(req.body)
     res.send(req.body)    
   });
-  
-
 });
+
+app.get('/mongo', (req, res) => {
+  console.log( url );
+  res.send({ok: true, msg: 'enviados datos de Atlas a consola'})
+})
 
 app.listen(port, function() {
   console.log(`server ok en puerto ${port}`)
