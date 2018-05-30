@@ -173,9 +173,7 @@ app.post('/:db/:collection', (request, response) => {
 })
 // fin Atlas
 
-app.get('/info', (req, res) => {
-  // http://localhost:3000/info?uf=uf1465
-  // console.log(req.query)  
+app.get('/info', (req, res) => {    
   MongoClient.connect(url, function(err, client) { 
     client.db('ifcd0112').collection('ufs').find()
     .toArray( (e,d) =>  res.send(d) )
