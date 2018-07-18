@@ -4,7 +4,7 @@ a) listar respuestas de un módulo fijo
 
 */
 var db = 'ifcd0112', 
-    collection = 'examenes-mod1',
+    collection = 'examenes-mod2',
     url = `/${db}/${collection}`
 
 $('#db').text(db); $('#collection').text(collection);    

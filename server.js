@@ -61,7 +61,7 @@ function getUf(uf, cb){
 app.get('/corregir', (request, response) => {  
   // http://localhost:3000/corregir?uf1=1234a678-0&uf2=1234567890...
 
-  let uf1 = Array.from('aaaaaaaaaa'), uf2 = Array.from('bbbbbbbbbb'), uf3 = Array.from('aaaaabbbbb');
+  let uf1 = Array.from('aaaaaaaaaa'), uf2 = Array.from('aaaaaaaaaa'), uf3 = Array.from('aaaaaaaaaa');
   console.log(uf1,uf2,uf3)
   let examenUf1 = Array.from(request.query.uf1), 
       examenUf2 = Array.from(request.query.uf2),

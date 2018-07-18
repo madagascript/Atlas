@@ -1,5 +1,5 @@
 // al cambiar de módulo hay que cambiar collection de momento
-const db = 'ifcd0112', collection = 'examenes-mod1'
+const db = 'ifcd0112', collection = 'examenes-mod2'
 
 class App {  
   constructor(){  }
