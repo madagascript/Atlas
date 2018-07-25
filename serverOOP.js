@@ -15,8 +15,6 @@ class App {
   }
 }
 
-
-//Iniciar server: nodemon server.js mongodb+srv://curso:ifcd0112@cluster0-6m3ok.mongodb.net
 const express = require('express');
 const bodyParser = require('body-parser')
 const mongo = require('mongodb') 
