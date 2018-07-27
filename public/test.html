@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Atlas</title>
+</head>
+<h4> funciones callback </h4>
+<body>
+  
+  <button onclick="getData( toSelect )"> leer colección </button>
+  <select id="posts" onchange="$('#jsonDoc').text( $('#posts').val() )"></select><br>
+  <h4 id="jsonDoc"></h4>
+  <hr>
+  <h4> datos en JSON </h4>
+  <button onclick="getData( toPre )"> ver datos en crudo </button>
+  <pre id="json"> </pre>
+</body>
+</html>
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+<script>
+
+function getData(cb){
+  $.getJSON('/domingo/posts/', d => cb(d))
+}
+
+function toSelect(data){
+  let div = $('#posts')
+  div.html = ''
+  data.forEach( post => div.append(` <option value="${post._id}"> ${post.nombre} </option> `))
+}
+
+function toPre(data){
+  let div = $('#json')
+  div.text( JSON.stringify(data, undefined, 2) )  
+}
+
+</script>
+

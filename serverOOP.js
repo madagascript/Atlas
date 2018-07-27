@@ -45,7 +45,9 @@ const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
 mongo.MongoClient.connect(url, (err, client) => mongoCli = client );
+
 app.use(bodyParser.json())
+app.use( express.static('public') )
 
 app.get( '/:db/:collection', App.showCollection )
 // curl http://localhost:3000/domingo/posts
@@ -58,9 +60,12 @@ app.post('/update', App._update )
 app.post('/delete', App._delete )
 // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
 
+app.get('/test', (req, res) => {
 
+})
 
 app.listen(port, function() {
   console.log(`server ok en puerto ${port}`)
 })
+
 
