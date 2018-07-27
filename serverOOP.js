@@ -17,8 +17,8 @@ class App {
     res.download('serverOOP.js');
   }
   static _update(req, res){
-    // hace update si recibe _id en body, e insert en otro caso:
-    let id = req.body._id ? new mongo.ObjectID(req.body._id) : null
+    let id = ( req.body._id && req.body._id.length == 24 ) ? new mongo.ObjectID(req.body._id) : new mongo.ObjectID()
+    // hace update si recibe _id en body, e insert en otro caso:    
     delete req.body._id
     mongoCli.db('domingo').collection('posts').update(
       { _id: id}, req.body, {upsert: true},
@@ -29,6 +29,8 @@ class App {
     let id = req.body._id ? new mongo.ObjectID(req.body._id) : null
     mongoCli.db('domingo').collection('posts').deleteOne({ _id: id}, (err, data) => { res.send( data ? data : err) })
   }
+
+  
 }
 
 
@@ -55,6 +57,9 @@ app.post('/update', App._update )
 // curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
 app.post('/delete', App._delete )
 // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
+
+
+
 app.listen(port, function() {
   console.log(`server ok en puerto ${port}`)
 })
