@@ -2,23 +2,40 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
   </head>
 <body>
-  
-<div ng-app="posts" ng-controller="c1" class="container"> 
-<hr>
-<textarea class="img-thumbnail rounded input-form" cols="100" ng-model="html">
-</textarea>
-<hr>
-<div>{{html}}</div>
+
+<div ng-app="ejemplos" ng-controller="c1"> 
+
+<h3>ejemplos de ajax contra Mongo-Express</h3>
+
+
+<select ng-model="database" ng-change="changeDb()">
+  <option value="{{db.name}}" ng-repeat="db in databases" ng-bind="db.name"></option>
+</select>
+
+
+<select ng-model="collection"  ng-change="changeCollection()">
+  <option value="{{col.name}}" ng-repeat="col in collections" ng-bind="col.name"></option>
+</select>
+
+<pre>{{documents|json}}</pre>
+
+<ol>
+  <li ng-repeat="doc in documents">
+    <pre>{{doc|json}}</pre>
+  </li>
+</ol>
+<pre>
+  {{json}}
+</pre>
+
 </div>
 
 
 
 </body>
 </html>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script src="index.js"></script>

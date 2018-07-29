@@ -29,12 +29,14 @@ class App {
     let id = req.body._id ? new mongo.ObjectID(req.body._id) : null
     mongoCli.db('domingo').collection('posts').deleteOne({ _id: id}, (err, data) => { res.send( data ? data : err) })
   }
-
-  
+  static getDbs(req, res){
+    const adminDb = mongoCli.db().admin();
+    adminDb.listDatabases(function(err, data) { res.send(data ? data.databases : err) });    
+  }
+  static getCollections(req, res){
+    mongoCli.db(req.query.db).listCollections().toArray( (e,d) =>  res.send(d ? d : e) );    
+  }
 }
-
-
-
 
 const express = require('express');
 const mongo = require('mongodb') 
@@ -59,6 +61,10 @@ app.post('/update', App._update )
 // curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
 app.post('/delete', App._delete )
 // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
+
+app.get('/dbs', App.getDbs );
+app.get('/colls', App.getCollections );
+// curl localhost:3000/colls?db=test
 
 app.get('/test', (req, res) => {
 
