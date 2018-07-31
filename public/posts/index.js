@@ -24,7 +24,8 @@ class App {
 var app = new App();
 angular.module('ejemplos', [])
 .controller('c1', function($scope, $http) {      
-    app.getDbs($scope, $http);
-    $scope.changeDb = function(){ app.getCollections($scope, $http) }
-    $scope.changeCollection = function(){ app.showCollection($scope, $http) }
+  app.getDbs($scope, $http);
+  $scope.test = function(){ console.log($scope.post) }
+  $scope.changeDb = function(){ app.getCollections($scope, $http) }
+  $scope.changeCollection = function(){ app.showCollection($scope, $http) }
 })

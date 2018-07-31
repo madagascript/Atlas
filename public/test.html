@@ -4,43 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <title>Atlas</title>
 </head>
-<h4> funciones callback </h4>
-<body>
-  
-  <button onclick="getData( toSelect )"> leer colección </button>
-  <select id="posts" onchange="$('#jsonDoc').text( $('#posts').val() )"></select><br>
-  <h4 id="jsonDoc"></h4>
-  <hr>
-  <h4> datos en JSON </h4>
-  <button onclick="getData( toPre )"> ver datos en crudo </button>
-  <pre id="json"> </pre>
+<body class="container">
+
+  <div ng-app="ejemplos" ng-controller="c1" class="container">
+    <input ng-model="fact.cliente" placeholder="nombre del cliente" class="form-control"> 
+    <button ng-click="fact.lineas.push({concepto: '', cantidad: 1, precio: 1})" class="btn btn-primary"> añadir concepto </button>
+    <button ng-click="guardar()" class="btn btn-primary"> guardar factura </button>
+    <hr>
+    <div ng-repeat="(index, linea) in fact.lineas" class="container row">
+      <div class="col-1">
+          <button ng-click="fact.lineas.splice(index, 1)" class="btn btn-primary"> X </button>
+      </div>
+      <div class="col-5">       
+        <input type="text" ng-model="linea.concepto" class="form-control">
+      </div>
+      <div class="col-2">
+        <input type="number" ng-model="linea.cantidad" class="form-control">    
+      </div>
+      <div class="col-2">
+        <input type="number" ng-model="linea.precio" class="form-control">    
+      </div>
+      <div class="col-2">
+       <span class="text-danger img-thumbnail float-right">{{ (linea.cantidad * linea.precio).toFixed(2) }}</span>
+      </div>      
+    </div>
+
+  </div>
+
 </body>
-</html>
-
-
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous">
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script>
 
-function getData(cb){
-  $.getJSON('/domingo/posts/', d => cb(d))
+class Factura {
+  constructor(){
+    this.cliente = '';
+    this.lineas = []
+  }
+
+  guardar(scope, http){
+    http.post('/update', this).then( resp => console.log(resp) )
+  }
 }
 
-function toSelect(data){
-  let div = $('#posts')
-  div.html = ''
-  data.forEach( post => div.append(` <option value="${post._id}"> ${post.nombre} </option> `))
-}
-
-function toPre(data){
-  let div = $('#json')
-  div.text( JSON.stringify(data, undefined, 2) )  
-}
-
+angular.module('ejemplos', [])
+.controller('c1', function($scope, $http) {      
+  $scope.fact = new Factura()
+  // polimorfismo guardar():
+  $scope.guardar = function(){ $scope.fact.guardar($scope, $http)}
+})
 </script>
 
