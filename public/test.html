@@ -14,10 +14,12 @@
     <input ng-model="fact.cliente" placeholder="nombre del cliente" class="form-control"> 
     <button ng-click="fact.lineas.push({concepto: '', cantidad: 1, precio: 1})" class="btn btn-primary"> añadir concepto </button>
     <button ng-click="guardar()" class="btn btn-primary"> guardar factura </button>
+    <button ng-click="nueva()" class="btn btn-primary"> nueva factura </button>
     <hr>
+
     <div ng-repeat="(index, linea) in fact.lineas" class="container row">
       <div class="col-1">
-          <button ng-click="fact.lineas.splice(index, 1)" class="btn btn-primary"> X </button>
+          <button ng-click="fact.lineas.splice(index, 1)" class="btn btn-default"> borrar </button>
       </div>
       <div class="col-5">       
         <input type="text" ng-model="linea.concepto" class="form-control">
@@ -32,6 +34,14 @@
        <span class="text-danger img-thumbnail float-right">{{ (linea.cantidad * linea.precio).toFixed(2) }}</span>
       </div>      
     </div>
+    <hr>
+    <span class="text-danger img-thumbnail float-right">{{ fact.importe().toFixed(2) }}</span>
+    <hr>
+    
+    <div ng-repeat="f in facturas">
+      <span ng-click="selecciona(f)"> {{f.cliente}} </span>
+      
+    </div>
 
   </div>
 
@@ -45,16 +55,34 @@ class Factura {
     this.lineas = []
   }
 
-  guardar(scope, http){
-    http.post('/update', this).then( resp => console.log(resp) )
+  importe(){
+    let importe = 0
+    this.lineas.forEach( linea => importe += linea.cantidad * linea.precio)
+    return importe
+  }
+
+  guardar(http){
+    http.post('/update', this).then( resp => {
+      if (resp.data.upserted ) { this._id = resp.data.upserted[0]._id }
+      else { console.log(resp.data) }
+    })
+  }
+
+  static listar(scope, http){
+    http.get('/domingo/posts').then( resp => scope.facturas = resp.data )
   }
 }
 
 angular.module('ejemplos', [])
 .controller('c1', function($scope, $http) {      
+  // listar facturas de Mongo Atlas
+  Factura.listar($scope, $http)
+  // crear factura vacia:
   $scope.fact = new Factura()
-  // polimorfismo guardar():
-  $scope.guardar = function(){ $scope.fact.guardar($scope, $http)}
+  // botones para el view
+  $scope.guardar = function(){ $scope.fact.guardar($http)}
+  $scope.nueva = function(){ $scope.fact = new Factura() }
+  $scope.selecciona = function(f){ $scope.fact = f }
 })
 </script>
 
