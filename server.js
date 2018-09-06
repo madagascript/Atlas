@@ -44,12 +44,18 @@ app.get('/img', (request, response) => {
 function corrige(pattern, response, index){
   // los 2 parámetros son arrays
   let total = { puntuacion: 0, correctas: 0, incorrectas: 0, blanco: 0, errores: []}    
+  
   pattern.forEach( (val, key) => {         
     let numPregunta = index + key + 1
     if ( response[key] == val ){ total.correctas += 1 }
     else {
-      if ( response[key] == '-' ){ total.blanco += 1 }
-      else { total.errores.push(`error en pregunta: ${numPregunta}`);  total.incorrectas += 1}
+      if ( response[key] == '-' ){ total.blanco += 1 } 
+      else { 
+        let msg = `error en pregunta ${numPregunta}`;
+        total.errores.push(msg);
+        total.incorrectas += 1;
+      }
+      // else { total.errores.push(`error en ${numPregunta}`);  total.incorrectas += 1}
     }
   });
   total.puntuacion = total.correctas - (total.incorrectas * 0.25)
@@ -94,6 +100,7 @@ app.get('/:db/:collection', function (request, response) {
     .sort({})
     .toArray( (err, results)=>{
       console.log(err)
+      response.setHeader('Content-Type', 'application/json');
       response.send(JSON.stringify(results));
     });    
     client.close()
