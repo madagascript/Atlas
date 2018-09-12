@@ -1,8 +1,9 @@
 class App {
   constructor(){}
   static showCollection(req, res){
-    mongoCli.db(req.params.db).collection(req.params.collection).find().sort({})
-    .toArray( (err, results) => { res.send(results) });  
+    mongoCli.db(req.params.db).collection(req.params.collection).find().sort({}).toArray( (err, results) => { 
+      res.send(results ? results : err) 
+    });  
   }
   static showDocument(req, res){
     // los ObjectId de Mongo son string de 24 caracteres Hexadecimales, 
@@ -39,17 +40,23 @@ class App {
 }
 
 const express = require('express');
-const mongo = require('mongodb') 
-const bodyParser = require('body-parser')
+const mongo = require('mongodb');
+const bodyParser = require('body-parser');
 const app = express();
-const url = process.argv[2]
+const url = process.argv[2];
 const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
 mongo.MongoClient.connect(url, (err, client) => mongoCli = client );
 
-app.use(bodyParser.json())
-app.use( express.static('public') )
+app.use(bodyParser.json());
+app.use( express.static('public') );
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
+  res.header('Content-Type', 'application/json');
+  next();
+});
 
 app.get( '/:db/:collection', App.showCollection )
 // curl http://localhost:3000/domingo/posts

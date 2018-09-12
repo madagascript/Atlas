@@ -55,7 +55,6 @@ function corrige(pattern, response, index){
         total.errores.push(msg);
         total.incorrectas += 1;
       }
-      // else { total.errores.push(`error en ${numPregunta}`);  total.incorrectas += 1}
     }
   });
   total.puntuacion = total.correctas - (total.incorrectas * 0.25)
