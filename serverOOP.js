@@ -69,7 +69,6 @@ app.post('/update', App._update ); // curl -X POST http://localhost:3000/update 
 app.post('/delete', App._delete ); // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
-
 app.get('/test', (req, res) => {})
 
 app.listen(port, function() {
