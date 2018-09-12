@@ -17,9 +17,7 @@ class App {
           res.send(results ? results : err);
         });  
     }
-  }
-
-  
+  }  
   static server(req, res){
     res.download('serverOOP.js');
   }
@@ -64,24 +62,15 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get( '/:db/:collection', App.showCollection )
-// curl http://localhost:3000/domingo/posts
-app.get('/:db/:collection/:id', App.showDocument )
-// curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
-app.get('/server', App.server )
-// curl http://localhost:3000/server
-app.post('/update', App._update )
-// curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
-app.post('/delete', App._delete )
-// curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
-
+app.get( '/:db/:collection', App.showCollection ); // curl http://localhost:3000/domingo/posts
+app.get('/:db/:collection/:id', App.showDocument ); // curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
+app.get('/server', App.server ); // curl http://localhost:3000/server
+app.post('/update', App._update ); // curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
+app.post('/delete', App._delete ); // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
 app.get('/dbs', App.getDbs );
-app.get('/colls', App.getCollections );
-// curl localhost:3000/colls?db=test
+app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
 
-app.get('/test', (req, res) => {
-
-})
+app.get('/test', (req, res) => {})
 
 app.listen(port, function() {
   console.log(`server ok en puerto ${port}`)
