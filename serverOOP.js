@@ -2,7 +2,7 @@ class App {
   constructor(){}
   static showCollection(req, res){
     mongoCli.db(req.params.db).collection(req.params.collection).find().sort({}).toArray( (err, results) => { 
-      res.send(results ? results : err) 
+      res.send(results ? results : err)
     });  
   }
   static showDocument(req, res){
@@ -11,9 +11,15 @@ class App {
     if ( req.params.id.length !== 24 ) { res.send({}) }
     else {
       mongoCli.db(req.params.db).collection(req.params.collection)
-      .findOne({ _id: new mongo.ObjectId(req.params.id) }, (err, results) => { res.send(results)} )  
+      .findOne(
+        { _id: new mongo.ObjectId(req.params.id) }, 
+        (err, results) => { 
+          res.send(results ? results : err);
+        });  
     }
   }
+
+  
   static server(req, res){
     res.download('serverOOP.js');
   }
