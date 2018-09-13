@@ -41,7 +41,7 @@ class App {
     );
   }
   static _delete(req, res){
-    console.log('delete',req.params)
+    console.log(`deleting...: ${JSON.stringify(req.params)}`)
     mongoCli.db(req.params.db).collection(req.params.collection).deleteOne({ _id: new mongo.ObjectID(req.params.id) }, (err, data) => { res.send( data ? data : err) })
   }
   static getDbs(req, res){
