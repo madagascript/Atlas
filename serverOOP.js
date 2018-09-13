@@ -4,6 +4,7 @@ function connError(res) {
 }
 
 function logIp(req, msg, data){
+  console.log('new request at', new Date().toLocaleString());
   console.log(msg, req.socket.remoteAddress, data)
 }
 class App {
