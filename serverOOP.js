@@ -9,7 +9,7 @@ function logIp(req, msg, data){
 class App {
   constructor(){ }
   static showCollection(req, res){
-    logIp(req, 'showCollection from IP:', {});
+    logIp(req, 'App.showCollection() from IP:', {});
     if ( !mongoCli ){ connError(res) } else {
       mongoCli.db(req.params.db).collection(req.params.collection).find().sort({}).toArray( (err, results) => { 
         res.send(results ? results : err)
@@ -17,6 +17,7 @@ class App {
     }  
   }
   static showDocument(req, res){
+    logIp(req, 'App.showDocument() from IP:', req.body);
     if (!mongoCli){ connError(res) } else {    
       // los ObjectId de Mongo son string de 24 caracteres Hexadecimales, 
       // si no mide 24, no hay que buscar porque petaría el server al crear el ObjectId();
@@ -35,25 +36,37 @@ class App {
     res.download('serverOOP.js');
   }
   static _update(req, res){
-    logIp(req, 'update from IP:', req.body);
+    logIp(req, 'App._update() from IP:', req.body);
     let id = ( req.body._id && req.body._id.length == 24 ) ? new mongo.ObjectID(req.body._id) : new mongo.ObjectID()
     // hace update si recibe _id en body, e insert en otro caso:    
     delete req.body._id
-    mongoCli.db(req.params.db).collection(req.params.collection).replaceOne(
-      { _id: id}, req.body, {upsert: true},
-      (err, data) => { res.send(data ? data : err) }
-    );
+    if ( !mongoCli ){ connError(res) } else { 
+      mongoCli.db(req.params.db).collection(req.params.collection).replaceOne(
+        { _id: id}, req.body, {upsert: true},
+        (err, data) => { res.send(data ? data : err) }
+      );
+    }
   }
   static _delete(req, res){    
-    console.log(`deleting: ${JSON.stringify(req.params)}`)
-    mongoCli.db(req.params.db).collection(req.params.collection).deleteOne({ _id: new mongo.ObjectID(req.params.id) }, (err, data) => { res.send( data ? data : err) })
+    logIp(req, 'App._delete() from IP:', req.params);
+    // console.log(`deleting: ${JSON.stringify(req.params)}`)
+    if ( !mongoCli ){ connError(res) } else { 
+      mongoCli.db(req.params.db).collection(req.params.collection)
+      .deleteOne({ _id: new mongo.ObjectID(req.params.id) }, (err, data) => { res.send( data ? data : err) });
+    }
   }
   static getDbs(req, res){
-    const adminDb = mongoCli.db().admin();
-    adminDb.listDatabases(function(err, data) { res.send(data ? data.databases : err) });    
+    logIp(req, 'App.getDbs() from IP:', {});
+    if ( !mongoCli ){ connError(res) } else { 
+      const adminDb = mongoCli.db().admin();
+      adminDb.listDatabases(function(err, data) { res.send(data ? data.databases : err) });   
+    } 
   }
   static getCollections(req, res){
-    mongoCli.db(req.query.db).listCollections().toArray( (e,d) =>  res.send(d ? d : e) );    
+    logIp(req, 'App.getCollections() from IP:', req.query);
+    if ( !mongoCli ){ connError(res) } else { 
+      mongoCli.db(req.query.db).listCollections().toArray( (e,d) =>  res.send(d ? d : e) );    
+    }
   }
   
 }
