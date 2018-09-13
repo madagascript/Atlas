@@ -3,9 +3,13 @@ function connError(res) {
   res.send({ ok: false, message: 'Express no puede conectar con Atlas, espera un momento, por favor' })
 }
 
+function logIp(req, msg, data){
+  console.log(msg, req.socket.remoteAddress, data)
+}
 class App {
   constructor(){ }
   static showCollection(req, res){
+    logIp(req, 'showCollection from IP:', {});
     if ( !mongoCli ){ connError(res) } else {
       mongoCli.db(req.params.db).collection(req.params.collection).find().sort({}).toArray( (err, results) => { 
         res.send(results ? results : err)
@@ -31,7 +35,7 @@ class App {
     res.download('serverOOP.js');
   }
   static _update(req, res){
-    console.log('update', req.body )
+    logIp(req, 'update from IP:', req.body);
     let id = ( req.body._id && req.body._id.length == 24 ) ? new mongo.ObjectID(req.body._id) : new mongo.ObjectID()
     // hace update si recibe _id en body, e insert en otro caso:    
     delete req.body._id
@@ -40,8 +44,8 @@ class App {
       (err, data) => { res.send(data ? data : err) }
     );
   }
-  static _delete(req, res){
-    console.log(`deleting...: ${JSON.stringify(req.params)}`)
+  static _delete(req, res){    
+    console.log(`deleting: ${JSON.stringify(req.params)}`)
     mongoCli.db(req.params.db).collection(req.params.collection).deleteOne({ _id: new mongo.ObjectID(req.params.id) }, (err, data) => { res.send( data ? data : err) })
   }
   static getDbs(req, res){
