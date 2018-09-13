@@ -22,10 +22,11 @@ class App {
     res.download('serverOOP.js');
   }
   static _update(req, res){
+    console.log('update', req.body )
     let id = ( req.body._id && req.body._id.length == 24 ) ? new mongo.ObjectID(req.body._id) : new mongo.ObjectID()
     // hace update si recibe _id en body, e insert en otro caso:    
     delete req.body._id
-    mongoCli.db('domingo').collection('posts').update(
+    mongoCli.db(req.params.db).collection(req.params.collection).update(
       { _id: id}, req.body, {upsert: true},
       (err, data) => { res.send(data ? data : err) }
     );
@@ -63,6 +64,7 @@ app.use(function(req, res, next) {
 });
 
 app.get( '/:db/:collection', App.showCollection ); // curl http://localhost:3000/domingo/posts
+app.post( '/:db/:collection', App._update ); // curl http://localhost:3000/domingo/posts
 app.get('/:db/:collection/:id', App.showDocument ); // curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
 app.get('/server', App.server ); // curl http://localhost:3000/server
 app.post('/update', App._update ); // curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
