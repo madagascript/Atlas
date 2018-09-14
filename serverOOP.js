@@ -4,8 +4,10 @@ function connError(res) {
 }
 
 function logIp(req, msg, data){
+  console.log('------------------------------->')
   console.log('new request at', new Date().toLocaleString());
-  console.log(msg, req.socket.remoteAddress, data)
+  console.log(msg, req.socket.remoteAddress)
+  console.log(data)
 }
 class App {
   constructor(){ }
@@ -17,6 +19,18 @@ class App {
       });
     }  
   }
+
+  static findSort(req, res){
+    logIp(req, 'App.findSort() from IP:', {});
+    if ( !mongoCli ){ connError(res) } else {      
+      mongoCli.db(req.body.db).collection(req.body.collection)
+      .find(req.body.find)
+      .sort(req.body.sort).toArray( (err, results) => { 
+        res.send(results ? results : err)
+      });
+    }  
+  }
+
   static showDocument(req, res){
     logIp(req, 'App.showDocument() from IP:', req.body);
     if (!mongoCli){ connError(res) } else {    
@@ -34,6 +48,7 @@ class App {
     }
   }  
   static server(req, res){
+    logIp(req, 'App.server() from IP:', {});
     res.download('serverOOP.js');
   }
   static _update(req, res){
@@ -70,6 +85,7 @@ class App {
     }
   }
   
+
 }
 
 const express = require('express');
@@ -86,20 +102,20 @@ app.use(bodyParser.json());
 app.use( express.static('public') );
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
   res.header('Content-Type', 'application/json');
   next();
 });
 
 app.get( '/:db/:collection', App.showCollection ); // curl http://localhost:3000/domingo/posts
-app.post( '/:db/:collection', App._update ); 
-app.delete( '/:db/:collection/:id', App._delete ); 
-
+app.post( '/:db/:collection', App._update ); // curl -X POST http://localhost:3000/domingo/posts -d '{}'
+app.delete( '/:db/:collection/:id', App._delete ); // curl -X DELETE http://localhost:3000/domingo/posts/5b5993710668260c701655d4 
 app.get('/:db/:collection/:id', App.showDocument ); // curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
-app.get('/server', App.server ); // curl http://localhost:3000/server
-app.post('/update', App._update ); // curl -X POST http://localhost:3000/update -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5",  "nombre": "Antonio", "texto": "artículo de Antonio"}'
-app.post('/delete', App._delete ); // curl -X POST localhost:3000/delete -H "Content-Type: application/json" -d '{ "_id": "5b59940d0668260c701655d5" }'
+
+app.post('/findSort', App.findSort ); 
+
+app.get('/server', App.server ); 
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
 app.get('/test', (req, res) => {})
