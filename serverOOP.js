@@ -87,8 +87,10 @@ class App {
   static insertMany(req, res){
     logIp(req, 'App.updateMany() from IP:', req.query);
     if ( !mongoCli ){ connError(res) } else { 
-      mongoCli.db(req.params.db).collection(req.params.collection).deleteMany({});
-      mongoCli.db(req.params.db).collection(req.params.collection).insertMany( req.body, (err, data) => res.send( data ? data : err ));
+      mongoCli.db(req.params.db).collection(req.params.collection).deleteMany({}, d => {
+        mongoCli.db(req.params.db).collection(req.params.collection).insertMany( req.body, (err, data) => res.send( data ? data : err ));
+      });
+      
     }
   }
 
