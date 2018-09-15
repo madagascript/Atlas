@@ -9,6 +9,12 @@ function logIp(req, msg, data){
   console.log(msg, req.socket.remoteAddress)
   console.log(data)
 }
+
+function isAdmin(cred){
+  let userPass = (url.split('//')[1]).split('@')[0]  
+  if (userPass == cred){ return true } else { return false}  
+}
+
 class App {
   constructor(){ }
   static showCollection(req, res){
@@ -93,10 +99,10 @@ class App {
       
     }
   }
-  static dropCollection(req, res){
-    logIp(req, 'App.dropCollection() from IP:', req.query);
-    if ( !mongoCli ){ connError(res) } else { 
-      mongoCli.db(req.params.db).collection(req.params.collection).drop();
+  static dropCollection(req, res){    
+    logIp(req, 'App.dropCollection() from IP:', req.params);
+    if ( !mongoCli || !isAdmin(req.query.c) ){ connError(res) } else { 
+      mongoCli.db(req.params.db).collection(req.params.collection).drop( d => res.send(d));
     }
   }
 }
@@ -112,6 +118,7 @@ var mongoCli = null;
 mongo.MongoClient.connect(url, (err, client) => mongoCli = client );
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use( express.static('public') );
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -134,10 +141,14 @@ app.post('/findSort', App.findSort );
 app.get('/server', App.server ); 
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
-app.get('/test', (req, res) => {})
+app.get('/test', (req, res) => {
+  if ( isAdmin(req.query.credentials) ){ res.send('Ok!!') }
+  else { res.send('algo mal') }
+  
+})
 
 app.listen(port, function() {
-  console.log(`iniciado server en puerto ${port} a las ${new Date()}`)
+  console.log(`iniciado server en puerto ${port} a las ${new Date()}`);
 })
 
 
