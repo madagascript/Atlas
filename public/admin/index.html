@@ -4,103 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Admin</title>
+  <title>Atlas</title>
 </head>
 
-<body onload="new App()">
-  <div id="firstLine" onclick="$('#cabecera').toggle()"> Admin </div>
-  
-  <div id="cabecera">
-    db: <b><span id="db" contenteditable="true"></span></b>
-    collection: <b> <span id="collection" contenteditable="true"></span> </b>    
-    <input type="button" value="refresh" onclick="new MongoDb().list()" title="onclick = new MongoDb().list()">    
+<body onload="">
+  <select id="databases">    
+  </select>
 
-    <select id="sel1" onchange="new MongoDoc().show()" title="onchange = new MongoDoc().show()"></select>    
-    <br>
-    db.collection
-    .find(
-      <code 
-      id="strFind" 
-      contenteditable="true" 
-      oninput="sortBy.checked = false" 
-      title=" oninput = sortBy.checked = false"
-      style="color: green">
-        {  }
-    </code>
-    )
-    .sort(
-    <code 
-      id="strSort" 
-      contenteditable="true" 
-      oninput="sortBy.checked = false" 
-      title=" oninput = sortBy.checked = false"
-      style="color: green">
-        {  }
-    </code>
-    )
+  <select id="collections">    
+  </select>
+  <br>
+  <br>
+  <div id="guardar" hidden>
+    <button onclick="app.sendData()" style="background-color: rgb(160, 182, 241); ">tú sabrás !!!</button>    
+  </div>
   
-    activar filtros 
-    <input type="checkbox" id="sortBy" onchange="new MongoDb().list()" title=" onchange = new MongoDb().list()">
-    <hr>
-    <pre id="cliente" contenteditable="true">
-      conectando con la base de datos ...
-    </pre>
-    <br>
-    <br>
-    <button onclick="new MongoDoc().update()" title="onclick = new MongoDoc().update()"> ok </button>
-    <button onclick="new MongoDoc().delete()" title="onclick = new MongoDoc().delete()"> eliminar </button>
-    <hr>
-  </div>
 
-  <div onclick="$('#divHtml').toggle()">
-      <h3>html</h3>
-  </div>
-  <div id="divHtml" hidden>
-    <div id="showHtml"></div>
-    <hr>
-    <textarea id="textHtml" style="color: green" onchange="changeTextHtml()">
-    </textarea>
+  <pre id="out" contenteditable="true" style="background-color: rgb(101, 188, 243)">
     
-  </div>
+  </pre>
 
-<div onclick="$('#divInfoDoc').toggle()">
-  <h3>datos en el documento</h3>
-</div>
-
-<div id="divInfoDoc" hidden>
-  <select id="sel2" onchange="new MongoDoc().showProp()" title="onchange = new MongoDoc().showProp()"></select>
-  <br>
-  <br>
-  <div id="edicionProps" hidden>
-    <span id="nombreProp" contenteditable="true"></span><br>
-    <input type="text" id="newPropValue" size="100"><br>
-    <button onclick="new MongoDoc().setProp()" title="onclick = new MongoDoc().setProp() "> modificar </button>
-  </div>
-</div>
-
-<hr>
-
-<div onclick="$('#divUtils').toggle()">
-  <h3>prototipos</h3>
-</div>
-
-<div id="divUtils" hidden>
-  <button onclick="new ProtoLink()"> Link </button>
-</div>
-
-<hr>
-<div onclick="$('#divInfo').toggle()">
-  <h3>info</h3>
-</div>
-
-<div id="divInfo" hidden> 
-  <h3>querys - projections</h3>
-  <p> probar en consola para entender 
-    <pre>db.alumnos.find({ email : { $exists: true } },{email: 1}).sort({email: 1})</pre>
-  </p>
-  <br>
-</div>
-
+  
 </body>
 </html>
 

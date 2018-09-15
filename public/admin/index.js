@@ -1,184 +1,123 @@
-
-/* 
-arquitectura:
-
-a) el estado de la ventana en cada momento representa el estado de cosas sobre el que quiero interactuar;
-las clases y métodos se intentan llamar sin parámetros para que obtengan la información necesaria de los valores de pantalla;
-
-b) el server no ve el request.body en peticiones $.get(), así que $.post() si hay que enviar datos en body
-
-*/
-
-
-
-const defaultDb = 'domingo', defaultCollection = 'email'
-
-
-/* clases de la aplicación */
-class App{
+class App {
   constructor(){
-    $('#db').text(defaultDb);
-    $('#collection').text(defaultCollection)
-    new MongoDb().list()
-  }
-}
-
-class MongoDoc {
-  constructor(){    
-    this.db = $('#db').text();
-    this.collection = $('#collection').text();
-  }
-  setProp(){    
-    let cliente = JSON.parse($('#cliente').text())
-    cliente[$('#nombreProp').text()] = $('#newPropValue').val();
-    $('#cliente').text( JSON.stringify(cliente, undefined, 2) )
-  }
-  showProp(){
-    $('#edicionProps').show();
-    $('#newPropValue').val( $( "#sel2 option:selected" ).text() );
-    $('#nombreProp').text( $('#sel2').val() )
-  }
-  show(){
-    this._id = $('#sel1').val()
-    this.db = $('#db').text();
-    this.collection = $('#collection').text();    
-    let url = `/${this.db}/${this.collection}/${this._id}`
-    $('#edicionProps').hide()
-    $('#cliente').css({ color: 'red'});
-    $.getJSON( url, data => {       
-      $('#cliente').text( JSON.stringify(data, undefined, 2) );
-      $('#cliente').css({ color: 'green'});
-      if ( data.html ) {  
-        $('#showHtml').html( atob(data.html) )
-        $('#textHtml').val( atob(data.html) )
-        // $('#showHtml').html( data.html )
-        // $('#textHtml').text( data.html )
-      } else {
-        $('#showHtml').html('')
-        $('#textHtml').val('')
-      }
-      // showProps(data);
-      this.showProps()
-      // $('#sel2').change()
+    // console.log('App constructor ');
+    // inicializar eventos:
+    $('#databases').on('change', () => {      
+      let db = $('#databases').val()
+      this.changeDatabase(db)      
     });
-  }
-  showProps(){
-    let items = [];
-    let obj = JSON.parse($('#cliente').text())
-    $.each( obj, function( key, val ) {    
-      if ( key != '_id') { 
-        let str = `<option value="${key}">${val}</option>`;
-        items.push( str ); 
-      }  
+    $('#collections').on('change', () => {      
+      //hacer un find de todo
+      this.changeCollection()
     });
-    $('#sel2').html(items.join(''));    
-    $('#sel2').change();
+    // llenar el select primera vez
+    this.getDatabases(this.dbs2select)
+    
+    
+    
   }
-  delete(){
-    // datos: db, coll, _id
-    this._id = $('#sel1').val()
-    $.post( '/delete', this, ( data ) => { 
-      new MongoDb(this.db, this.collection).list()
-     });  
-  }
-  update(){
-    let obj = JSON.parse( $('#cliente').text() )
-    obj.db = this.db; obj.collection = this.collection            
+  
+  getDatabases(callback){
     $.ajax({
-      type: 'POST',
-      url: '/update',
+      type: 'GET',
+      url: '/dbs',
       beforeSend: (request) => {
         request.setRequestHeader("Content-Type", "application/json");
       },
-      dataType: 'json',
-      data: JSON.stringify(obj),
+      dataType: 'json',      
       async: true,
-      success: (data) => { new MongoDb().list() }
+      success: (d) => { callback(d) }
     });
-  } 
-}
-
-class MongoDb {
-  constructor(){
-    this.db = $('#db').text() ? $('#db').text() : defaultDb;
-    this.collection = $('#collection').text() ? $('#collection').text() : defaultCollection;
   }
-  list(){        
-    let url = `/${this.db}/${this.collection}`;      
+
+  dbs2select(data){    
+    let destino = $('#databases'), html = ''
+    destino.html(html);
+    data.forEach(element => {
+      html += `<option value="${element.name}">${element.name} - ${element.sizeOnDisk / 1024}</option>`
+    });
+    destino.html(html);
+    destino.change()
+  }
+
+  colls2select(data){    
+    let destino = $('#collections'), html = ''
+    destino.html(html);
+    data.forEach(element => {
+      console.log(element)
+      html += `<option value="${element.name}">${element.name}</option>`
+    });
+    destino.html(html);
+    destino.change();
+  }
+
+  changeDatabase(dbname){
+    this.db = dbname;
+    $.ajax({
+      type: 'GET',
+      url: `/colls?db=${this.db}`,
+      beforeSend: (request) => {
+        request.setRequestHeader("Content-Type", "application/json");
+      },
+      dataType: 'json',      
+      async: true,
+      success: (d) =>  this.colls2select(d)
+    });
+  }
+
+  changeCollection(){
+    let url = `/${$('#databases').val()}/${$('#collections').val()}`
+    $('#out').css({ color: 'white'})
+    $.ajax({
+      type: 'GET',
+      url: url ,
+      beforeSend: (request) => {
+        request.setRequestHeader("Content-Type", "application/json");
+      },
+      dataType: 'json',      
+      async: true,
+      success: (d) =>  {
+        this.collection = $('#collections').val()
+        $('#out').text( JSON.stringify(d, undefined, 2)).css({ color: 'black'})
+        // $('#out').css({ color: 'black'})
+      }
+    })
+  }
+
+  sendData(){
     let data = {
-      find: JSON.parse($('#strFind').text()),
-      sort: JSON.parse($('#strSort').text())
-    } 
-    console.log(data)
-    // activar orden según esté el checkbox y la cadena de búsqueda:
-    if ( document.getElementById('sortBy').checked ) {      
-      // let body = JSON.parse( $('#strSort').text() )
-      // $.post( url, body, data => this.makeSelector(data) );
-      $.ajax({
-        type: 'POST',
-        url: url,
-        beforeSend: (request) => {
-          request.setRequestHeader("Content-Type", "application/json");
-        },
-        dataType: 'json',
-        data: JSON.stringify(data),
-        async: true,
-        success: (data) => { this.makeSelector(data)   }
-      });
-    } 
-    else {        
-      $.getJSON( url, data => this.makeSelector(data) );      
-    }
-  }
-  makeSelector(data){
-    let items = [];
-    $.each( data, function( key, val ) {      
-      let str = `<option value="${val._id}">${key+1}.- ${val.nombre} - ${val._id} </option>`
-      items.push( str );
-    });      
-    $('#sel1').html(items.join(''));
-    new MongoDoc().show();
+      db: $('#databases').val(),
+      collection: $('#collections').val(),
+      array: JSON.parse( $('#out').text() )
+    }    
+    $('#out').css({ color: 'white'})
+    $.ajax({      
+      type: 'POST',
+      url: '/updateMany' ,
+      beforeSend: (request) => {
+        request.setRequestHeader("Content-Type", "application/json");
+      },
+      dataType: 'json',      
+      data: JSON.stringify(data),
+      async: true,
+      success: (d) =>  {
+        $('#databases').change();
+        $('#collections').change();
+        $('#out').css({ color: 'black'})
+        console.log(d)
+      }
+    });
+    console.log(this)
   }
 
 }
 
-/* Prototipos */
-class ProtoLink {
-  constructor(){
-    this.nombre ='nombre del enlace';
-    this.url = 'http://';
-    this.setCollection('blog','links');
-    this.draw();
-  }
-  setCollection(db, collection){
-    $('#db').text(db);
-    $('#collection').text(collection);
-  }
-  draw(){
-    $('#cliente').text( JSON.stringify(this, undefined, 2) );
-    new MongoDoc().showProps()
-  }
-}
 
-function changeTextHtml(){  
-  $('#showHtml').html( $('#textHtml').val() )
-  let doc = JSON.parse( $('#cliente').text() )
-  doc.html = btoa($('#textHtml').val())
-  $('#cliente').text( JSON.stringify(doc, undefined, 2))
-}
-
-/*
-pruebas y cosas para explicación:
-
-*/
-
-function loadDoc() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log('respuesta ok:', this.responseText)     
-    }
-  };
-  xhttp.open("GET", "https://api.ipify.org?format=json", true);
-  xhttp.send();
-}
+var app = new App()
+$(document).on("keypress", function (e) {
+  // AltGr-s muestra el botón  
+  console.log(e.which)
+  if ( e.which == 223 ) {
+    $('#guardar').toggle()
+  }  
+});
