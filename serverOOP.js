@@ -93,7 +93,12 @@ class App {
       
     }
   }
-
+  static dropCollection(req, res){
+    logIp(req, 'App.dropCollection() from IP:', req.query);
+    if ( !mongoCli ){ connError(res) } else { 
+      mongoCli.db(req.params.db).collection(req.params.collection).drop();
+    }
+  }
 }
 
 const express = require('express');
@@ -119,6 +124,7 @@ app.use(function(req, res, next) {
 app.get( '/:db/:collection', App.showCollection ); // curl http://localhost:3000/domingo/posts
 app.post( '/:db/:collection', App._update ); // curl -X POST http://localhost:3000/domingo/posts -d '{}'
 app.put('/:db/:collection', App.insertMany );
+app.delete( '/:db/:collection', App.dropCollection );
 
 app.delete( '/:db/:collection/:id', App._delete ); // curl -X DELETE http://localhost:3000/domingo/posts/5b5993710668260c701655d4 
 app.get('/:db/:collection/:id', App.showDocument ); // curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
