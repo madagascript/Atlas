@@ -20,14 +20,15 @@ class App {
   static showCollection(req, res){
     logIp(req, 'App.showCollection() from IP:', {});
     if ( !mongoCli ){ connError(res) } else {
-      mongoCli.db(req.params.db).collection(req.params.collection).find().sort({}).toArray( (err, results) => { 
+      mongoCli.db(req.params.db).collection(req.params.collection).find().sort()
+      .toArray( (err, results) => { 
         res.send(results ? results : err)
       });
     }  
   }
 
   static findSort(req, res){
-    logIp(req, 'App.findSort() from IP:', {});
+    logIp(req, 'App.findSort() from IP:',  req.body );
     if ( !mongoCli ){ connError(res) } else {      
       mongoCli.db(req.body.db).collection(req.body.collection)
       .find(req.body.find)
@@ -40,24 +41,31 @@ class App {
   static showDocument(req, res){
     logIp(req, 'App.showDocument() from IP:', req.body);
     if (!mongoCli){ connError(res) } else {    
-      // los ObjectId de Mongo son string de 24 caracteres Hexadecimales, 
-      // si no mide 24, no hay que buscar porque petaría el server al crear el ObjectId();
-      if ( req.params.id.length !== 24 ) { res.send({}) }
-      else {
-        mongoCli.db(req.params.db).collection(req.params.collection)
+      mongoCli.db(req.params.db).collection(req.params.collection)
         .findOne(
-          { _id: new mongo.ObjectId(req.params.id) }, 
+          { _id: req.params.id }, 
           (err, results) => { 
             res.send(results ? results : err);
           });  
-      }
+      // los ObjectId de Mongo son string de 24 caracteres Hexadecimales, 
+      // si no mide 24, no hay que buscar porque petaría el server al crear el ObjectId();
+      // if ( req.params.id.length !== 24 ) { res.send({}) }
+      // else {
+      //   mongoCli.db(req.params.db).collection(req.params.collection)
+      //   .findOne(
+      //     { _id: new mongo.ObjectId(req.params.id) }, 
+      //     (err, results) => { 
+      //       res.send(results ? results : err);
+      //     });  
+      // }
+
     }
   }  
   static server(req, res){
     logIp(req, 'App.server() from IP:', {});
     res.download('serverOOP.js');
   }
-  static _update(req, res){
+  static replaceOne(req, res){
     logIp(req, 'App._update() from IP:', req.body);
     let id = ( req.body._id && req.body._id.length == 24 ) ? new mongo.ObjectID(req.body._id) : new mongo.ObjectID()
     // hace update si recibe _id en body, e insert en otro caso:    
@@ -69,7 +77,7 @@ class App {
       );
     }
   }
-  static _delete(req, res){    
+  static deleteOne(req, res){    
     logIp(req, 'App._delete() from IP:', req.params);
     // console.log(`deleting: ${JSON.stringify(req.params)}`)
     if ( !mongoCli ){ connError(res) } else { 
@@ -115,12 +123,18 @@ const url = process.argv[2];
 const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
-mongo.MongoClient.connect(url, (err, client) => mongoCli = client );
+mongo.MongoClient.connect(url, (err, client) => {
+  if ( client ){ mongoCli = client}
+  else { 
+    console.log('hay un error en MongoClient.connect()');
+    console.log(err);
+  }
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use( express.static('public') );
-app.use(function(req, res, next) {
+app.use( (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
@@ -129,11 +143,11 @@ app.use(function(req, res, next) {
 });
 
 app.get( '/:db/:collection', App.showCollection ); // curl http://localhost:3000/domingo/posts
-app.post( '/:db/:collection', App._update ); // curl -X POST http://localhost:3000/domingo/posts -d '{}'
+app.post( '/:db/:collection', App.replaceOne ); // curl -X POST http://localhost:3000/domingo/posts -d '{}'
 app.put('/:db/:collection', App.insertMany );
 app.delete( '/:db/:collection', App.dropCollection );
 
-app.delete( '/:db/:collection/:id', App._delete ); // curl -X DELETE http://localhost:3000/domingo/posts/5b5993710668260c701655d4 
+app.delete( '/:db/:collection/:id', App.deleteOne ); // curl -X DELETE http://localhost:3000/domingo/posts/5b5993710668260c701655d4 
 app.get('/:db/:collection/:id', App.showDocument ); // curl http://localhost:3000/domingo/posts/5b5993710668260c701655d4
 
 app.post('/findSort', App.findSort ); 
@@ -141,8 +155,7 @@ app.post('/findSort', App.findSort );
 app.get('/server', App.server ); 
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
-app.get('/test', (req, res) => {
-  
+app.get('/test', (req, res) => { 
 })
 
 app.listen(port, function() {
