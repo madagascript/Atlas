@@ -15,7 +15,7 @@ cd Atlas
 npm install 
 node serverOOP.js mongodb+srv://&lt;user&gt;:&lt;password&gt;@&lt;cluster&gt;.mongodb.net &lt;port&gt;
 </pre>
-<p>
- Madagascript Admin WUI: 
- <a href="https://cursos-7a612.firebaseapp.com/" target="_blank"> abrir MongoDb Admin</a>
+<h3>Atlas Admin WUI</h3>
+<p> 
+ <a href="https://cursos-7a612.firebaseapp.com/" target="_blank"> madagascript Atlas DbAdmin</a>
 </p>
