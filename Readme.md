@@ -13,7 +13,7 @@
 git clone https://github.com/madagascript/Atlas
 cd Atlas
 npm install 
-node serverOOP.js mongodb+srv://<user>:<password>@<cluster>.mongodb.net <port>
+node serverOOP.js mongodb+srv://&lt;user&gt;:&lt;password&gt;@&lt;cluster&gt;.mongodb.net &lt;port&gt;
 </pre>
 <p>
  Madagascript Admin WUI: 
