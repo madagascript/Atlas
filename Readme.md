@@ -9,12 +9,12 @@
 </p>
 
 <h3> instalación y arranque del middleware Express - Mongodb Atlas</h3>
-<pre>
+<code>
 git clone https://github.com/madagascript/Atlas
 cd Atlas
 npm install 
 node serverOOP.js mongodb+srv://&lt;user&gt;:&lt;password&gt;@&lt;cluster&gt;.mongodb.net [&lt;port&gt;]
-</pre>
+</code>
 
 <h3>Atlas Admin WUI</h3>
 <p> 
