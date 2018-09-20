@@ -19,6 +19,6 @@ node serverOOP.js mongodb+srv://&lt;user&gt;:&lt;password&gt;@&lt;cluster&gt;.mo
 <h3>Atlas Admin WUI</h3>
 <p> 
  con el server Express arrancado en tu localhost abre 
- <a href="https://cursos-7a612.firebaseapp.com/" target="_blank"> este enlace </a>
+ <a href="https://madagascript-soft.firebaseapp.com/" target="_blank"> este enlace </a>
  y completa los datos de configuración en <b>Login</b><br> 
 </p>
