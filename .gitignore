@@ -6,3 +6,4 @@ tmp/
 temp/
 .*
 public/
+conf.json

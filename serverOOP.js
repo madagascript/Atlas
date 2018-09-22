@@ -119,7 +119,15 @@ const express = require('express');
 const mongo = require('mongodb');
 const bodyParser = require('body-parser');
 const app = express();
-const url = process.argv[2];
+const fs = require('fs');
+var mongoConf = { url: ''};
+if ( process.argv[2] == 'auto' ) {
+  mongoConf = JSON.parse( fs.readFileSync('./conf.json').toString() );
+} else {
+  mongoConf.url = process.argv[2];
+}
+const url = mongoConf.url ;
+console.log(mongoConf)
 const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
