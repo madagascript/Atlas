@@ -163,10 +163,16 @@ app.post('/findSort', App.findSort );
 app.get('/server', App.server ); 
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
-app.get('/test', (req, res) => { 
+app.post('/queryText', (req, res) => {   
+  // body { db: db, collection: collection, field: campo, text: texto }
+  let exp = new RegExp(`.*${req.body.text}.*`);
+  mongoCli.db(req.body.db).collection(req.body.collection).find({ [req.body.field]: exp }).toArray( (err, results) => {
+    console.log('total results ',results.length)
+    res.send(results);
+  })
 })
 
-app.listen(port, function() {
+app.listen(port, function() { 
   console.log(`iniciado server en puerto ${port} a las ${new Date()}`);
 })
 
