@@ -31,7 +31,7 @@ class App {
     logIp(req, 'App.findSort() from IP:',  req.body );
     if ( !mongoCli ){ connError(res) } else {      
       mongoCli.db(req.body.db).collection(req.body.collection)
-      .find(req.body.find)
+      .find(req.body.find, req.body.project)
       .sort(req.body.sort).toArray( (err, results) => { 
         res.send(results ? results : err)
       });
@@ -166,7 +166,10 @@ app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
 app.post('/queryText', (req, res) => {   
   // body { db: db, collection: collection, field: campo, text: texto }
   let exp = new RegExp(`.*${req.body.text}.*`);
-  mongoCli.db(req.body.db).collection(req.body.collection).find({ [req.body.field]: exp }).toArray( (err, results) => {
+  mongoCli.db(req.body.db).collection(req.body.collection)
+  .find({ [req.body.field]: exp })
+  .sort( req.body.sort )
+  .toArray( (err, results) => {
     console.log('total results ',results.length)
     res.send(results);
   })
