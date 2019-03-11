@@ -163,6 +163,31 @@ app.post('/findSort', App.findSort );
 app.get('/server', App.server ); 
 app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
+
+// funciones específicas para IFCD0111 de 2019:
+
+app.post('/replaceOne', (req, res) => {
+  logIp(req, '/replaceOne from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    mongoCli.db(req.body.db).collection(req.body.collection).replaceOne(
+      { _id: req.body.data._id}, req.body.data,
+      (err, data) => { res.send(data ? data : err) }
+    );
+  }
+});
+
+app.post('/distinct', (req, res) => {
+  logIp(req, '/distinct from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    mongoCli.db(req.body.db).collection(req.body.collection).distinct(
+      req.body.field,      
+      (err, data) => { res.send(data ? data : err) }
+    );
+  }
+
+})
+
+
 app.post('/queryText', (req, res) => {   
   // body { db: db, collection: collection, field: campo, text: texto }
   let exp = new RegExp(`.*${req.body.text}.*`);
