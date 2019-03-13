@@ -188,6 +188,7 @@ app.post('/distinct', (req, res) => {
 })
 
 app.post('/diccindicaciones', (req, res) => {
+  // body { db: db, collection: collection, termino: 'palabra a buscar en indicaciones y cambiar en diccionario', definicion: 'definicion en html de la palabra' }
   logIp(req, '/diccindicaciones from IP:', req.body);
   if ( !mongoCli ){ connError(res) } else { 
     let exp = new RegExp(`.*${req.body.termino}.*`);
@@ -196,8 +197,7 @@ app.post('/diccindicaciones', (req, res) => {
         mongoCli.db(req.body.db).collection(req.body.collection)
         .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, deficinion: req.body.definicion } }}, 
           (err, data) => { res.send( data ? data : err) });
-      });
-    //mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, deficinion: req.body.definicion } }},      (err, data) => { res.send( data ? data : err) });
+      });    
   }
 })
 
