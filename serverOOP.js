@@ -187,6 +187,19 @@ app.post('/distinct', (req, res) => {
 
 })
 
+app.post('/diccindicaciones', (req, res) => {
+  logIp(req, '/diccindicaciones from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    let exp = new RegExp(`.*${req.body.termino}.*`);
+    mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
+      { $pull: { diccionario: {palabra: req.body.termino} } }, (err, data) => {
+        mongoCli.db(req.body.db).collection(req.body.collection)
+        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, deficinion: req.body.definicion } }}, 
+          (err, data) => { res.send( data ? data : err) });
+      });
+    //mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, deficinion: req.body.definicion } }},      (err, data) => { res.send( data ? data : err) });
+  }
+})
 
 app.post('/queryText', (req, res) => {   
   // body { db: db, collection: collection, field: campo, text: texto }
