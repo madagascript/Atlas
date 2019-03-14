@@ -195,8 +195,8 @@ app.post('/diccindicaciones', (req, res) => {
     mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
       { $pull: { diccionario: {palabra: req.body._id} } }, (err, data) => {
         mongoCli.db(req.body.db).collection(req.body.collection)
-        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body._id, definicion: req.body.definicion } }}, 
-          (err, data) => { res.send( data ? data : err) });
+        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, definicion: req.body.definicion } }}, 
+          (err, data) => { res.send( data ? data : err); console.log('esta',req.body) });
       });    
   }
 })
