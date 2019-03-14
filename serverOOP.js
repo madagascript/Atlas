@@ -170,7 +170,7 @@ app.post('/replaceOne', (req, res) => {
   logIp(req, '/replaceOne from IP:', req.body);
   if ( !mongoCli ){ connError(res) } else { 
     mongoCli.db(req.body.db).collection(req.body.collection).replaceOne(
-      { _id: req.body.data._id}, req.body.data,
+      { _id: req.body.data._id}, req.body.data,  {upsert: true},
       (err, data) => { res.send(data ? data : err) }
     );
   }
@@ -193,9 +193,9 @@ app.post('/diccindicaciones', (req, res) => {
   if ( !mongoCli ){ connError(res) } else { 
     let exp = new RegExp(`.*${req.body.termino}.*`);
     mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
-      { $pull: { diccionario: {palabra: req.body.termino} } }, (err, data) => {
+      { $pull: { diccionario: {palabra: req.body._id} } }, (err, data) => {
         mongoCli.db(req.body.db).collection(req.body.collection)
-        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, deficinion: req.body.definicion } }}, 
+        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body._id, definicion: req.body.definicion } }}, 
           (err, data) => { res.send( data ? data : err) });
       });    
   }
