@@ -187,6 +187,21 @@ app.post('/distinct', (req, res) => {
 
 })
 
+app.post('/glosario', (req, res) => {
+  // body { db: 'db', collection: 'collection', find: 'analgésico', _id: 'Analgésico',  definition: 'definicion en html de la palabra' }
+  logIp(req, '/glosario from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    let exp = new RegExp(`.*${req.body.find}.*`);
+    mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
+      { $pull: { glosario: { concepto: req.body._id} } }, (err, data) => {
+        mongoCli.db(req.body.db).collection(req.body.collection)
+        .updateMany({ indicaciones: exp }, { $push: { glosario: { concepto: req.body._id, definicion: req.body.definition } }}, 
+          (err, data) => { res.send( data ? data : err); console.log('este', req.body) });
+      });    
+  }
+})
+
+
 app.post('/diccindicaciones', (req, res) => {
   // body { db: db, collection: collection, termino: 'palabra a buscar en indicaciones y cambiar en diccionario', definicion: 'definicion en html de la palabra' }
   logIp(req, '/diccindicaciones from IP:', req.body);
