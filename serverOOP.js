@@ -165,6 +165,7 @@ app.get('/dbs', App.getDbs );
 app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
 
 // funciones específicas para IFCD0111 de 2019:
+// trabajan con _id que no son ObjectId(), por eso están redefiniéndose
 
 app.post('/replaceOne', (req, res) => {
   logIp(req, '/replaceOne from IP:', req.body);
@@ -175,6 +176,18 @@ app.post('/replaceOne', (req, res) => {
     );
   }
 });
+
+app.post('/deleteOne', (req, res) => {
+  logIp(req, '/deleteOne from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    mongoCli.db(req.body.db).collection(req.body.collection).deleteOne(
+      { _id: req.body._id}, 
+      (err, data) => { res.send(data ? data : err) }
+    );
+  }
+});
+
+
 
 app.post('/distinct', (req, res) => {
   logIp(req, '/distinct from IP:', req.body);
@@ -196,21 +209,6 @@ app.post('/glosario', (req, res) => {
       { $pull: { glosario: { concepto: req.body._id} } }, (err, data) => {
         mongoCli.db(req.body.db).collection(req.body.collection)
         .updateMany({ indicaciones: exp }, { $push: { glosario: { concepto: req.body._id, definicion: req.body.definition } }}, 
-          (err, data) => { res.send( data ? data : err); console.log('este', req.body) });
-      });    
-  }
-})
-
-
-app.post('/diccindicaciones', (req, res) => {
-  // body { db: db, collection: collection, termino: 'palabra a buscar en indicaciones y cambiar en diccionario', definicion: 'definicion en html de la palabra' }
-  logIp(req, '/diccindicaciones from IP:', req.body);
-  if ( !mongoCli ){ connError(res) } else { 
-    let exp = new RegExp(`.*${req.body.termino}.*`);
-    mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
-      { $pull: { diccionario: { palabra: req.body.termino} } }, (err, data) => {
-        mongoCli.db(req.body.db).collection(req.body.collection)
-        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.entrada, definicion: req.body.definicion } }}, 
           (err, data) => { res.send( data ? data : err); console.log('este', req.body) });
       });    
   }
