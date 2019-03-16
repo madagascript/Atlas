@@ -193,10 +193,10 @@ app.post('/diccindicaciones', (req, res) => {
   if ( !mongoCli ){ connError(res) } else { 
     let exp = new RegExp(`.*${req.body.termino}.*`);
     mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
-      { $pullAll: { diccionario: {palabra: req.body._id} } }, (err, data) => {
+      { $pull: { diccionario: { palabra: req.body.termino} } }, (err, data) => {
         mongoCli.db(req.body.db).collection(req.body.collection)
-        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.termino, definicion: req.body.definicion } }}, 
-          (err, data) => { res.send( data ? data : err); console.log(req.body) });
+        .updateMany({ indicaciones: exp }, { $push: { diccionario: { palabra: req.body.entrada, definicion: req.body.definicion } }}, 
+          (err, data) => { res.send( data ? data : err); console.log('este', req.body) });
       });    
   }
 })
