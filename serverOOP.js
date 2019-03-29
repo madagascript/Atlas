@@ -127,7 +127,7 @@ if ( process.argv[2] == 'auto' ) {
   mongoConf.url = process.argv[2];
 }
 const url = mongoConf.url ;
-console.log(mongoConf)
+console.log( 'conectando al Cluster: ', url.split('@')[1] )
 const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
