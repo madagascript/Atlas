@@ -167,6 +167,16 @@ app.get('/colls', App.getCollections ); // curl localhost:3000/colls?db=test
 // funciones específicas para IFCD0111 de 2019:
 // trabajan con _id que no son ObjectId(), por eso están redefiniéndose
 
+app.post('/insertOne', (req, res) => {
+  logIp(req, '/insertOne from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else { 
+    mongoCli.db(req.body.db).collection(req.body.collection).insertOne(
+      req.body.data,  
+      (err, data) => { res.send(data ? data : err) }
+    );
+  }
+});
+
 app.post('/replaceOne', (req, res) => {
   logIp(req, '/replaceOne from IP:', req.body);
   if ( !mongoCli ){ connError(res) } else { 
@@ -186,8 +196,6 @@ app.post('/deleteOne', (req, res) => {
     );
   }
 });
-
-
 
 app.post('/distinct', (req, res) => {
   logIp(req, '/distinct from IP:', req.body);
