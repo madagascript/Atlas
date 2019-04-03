@@ -224,9 +224,10 @@ app.post('/glosario', (req, res) => {
 
 app.post('/formulaAProductos', (req, res) => {
   // body { db: 'test', collection: 'productos', find: 'celulitis', formula: 'Celulitis' }
+  logIp(req, '/formulaAProductos from IP:', req.body);
 
-  logIp(req, '/glosario from IP:', req.body);
-  if ( !mongoCli ){ connError(res) } else { 
+  if ( !mongoCli || req.body.find.length == 0 ){ connError(res) } else { 
+
     let exp = new RegExp(`.*${req.body.find}.*`);
     mongoCli.db(req.body.db).collection(req.body.collection).updateMany(
       { usos: exp },
