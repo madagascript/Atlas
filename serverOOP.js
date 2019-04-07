@@ -213,37 +213,32 @@ app.post('/glosario', (req, res) => {
   logIp(req, '/glosario from IP:', req.body);
   if ( !mongoCli ){ connError(res) } else { 
     let exp = new RegExp(`.*${req.body.find}.*`);
-    mongoCli.db(req.body.db).collection(req.body.collection).updateMany({ indicaciones: exp },
-      { $pull: { glosario: { concepto: req.body._id} } }, (err, data) => {
-        mongoCli.db(req.body.db).collection(req.body.collection)
-        .updateMany({ indicaciones: exp }, { $push: { glosario: { concepto: req.body._id, definicion: req.body.definition } }}, 
-          (err, data) => { res.send( data ? data : err); console.log(req.body) });
+    mongoCli.db(req.body.db).collection(req.body.collection)
+    .updateMany(
+      { indicaciones: exp }, 
+      { $addToSet: { glosario: { concepto: req.body._id, definicion: req.body.definition } }}, 
+      (err, data) => { 
+        res.send( data ? data : err); 
+        console.log(req.body);
       });    
   }
-})
+});
 
 app.post('/formulaAProductos', (req, res) => {
   // body { db: 'test', collection: 'productos', find: 'celulitis', formula: 'Celulitis' }
   logIp(req, '/formulaAProductos from IP:', req.body);
-
   if ( !mongoCli || req.body.find.length == 0 ){ connError(res) } else { 
-
     let exp = new RegExp(`.*${req.body.find}.*`);
     mongoCli.db(req.body.db).collection(req.body.collection).updateMany(
       { usos: exp },
-      { $pull: { formulas: req.body.formula } },
-      (err, data) => {
-        mongoCli.db(req.body.db).collection(req.body.collection).updateMany(
-          { usos: exp },
-          { $push: { formulas: req.body.formula } },
-          (err, data) => {
-            res.send( data ? data : err);
-          }
-        );
+      { $addToSet: { formulas: req.body.formula } },
+      (err, data) => { 
+        res.send( data ? data : err) 
+        console.log(req.body);
       }
     );
   }
-})
+});
 
 app.post('/queryText', (req, res) => {   
   // body { db: db, collection: collection, field: campo, text: texto }
