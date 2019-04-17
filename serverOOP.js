@@ -222,6 +222,22 @@ app.post('/glosario', (req, res) => {
   }
 })
 
+app.post('/pedidoAProductos', (req, res) => {
+  // body { db: 'test', collection: 'productos', idPedido: '1234', newEstado: 'Pedido', productos: ['_ide Producto1', '_ide Producto2', '_ide Producto3'] }
+  logIp(req, '/pedidoAProductos from IP:', req.body);
+  if ( !mongoCli ){ connError(res) } else {     
+    mongoCli.db(req.body.db).collection(req.body.collection).updateMany(
+      { _id: { $in: req.body.productos } },
+      { $set: { estado: req.body.newEstado }, $addToSet: { pedidos: req.body.idPedido } },
+      (err, data) => { 
+        res.send( data ? data : err) 
+        console.log(req.body);
+      }
+    );
+  }
+});
+
+
 app.post('/formulaAProductos', (req, res) => {
   // body { db: 'test', collection: 'productos', find: 'celulitis', formula: 'Celulitis' }
   logIp(req, '/formulaAProductos from IP:', req.body);
