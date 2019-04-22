@@ -237,6 +237,36 @@ app.post('/pedidoAProductos', (req, res) => {
   }
 });
 
+app.post('/borrarProductoPedido', (req, res) => {
+  logIp(req, '/borrarProductoPedido from IP:', req.body);
+  if (!mongoCli){ connError(res)} else {
+    mongoCli.db(req.body.db).collection(req.body.collection).updateMany(
+      { _id: {$in: req.body.productos}},
+      { $set: { estado: req.body.newEstado }, $pull: { pedidos: req.body.idPedido} },
+      (err, data) => {
+        res.send( data ? data : err)
+        console.log(req.body);
+      }
+    );
+  }
+});
+
+app.post('/pedidoRecibido', (req, res) => {
+  logIp(req, '/borrarProductoPedido from IP:', req.body);
+  if (!mongoCli){ connError(res)} else {
+    mongoCli.db(req.body.db).collection(req.body.collection).updateOne(
+      {_id: req.body.productoRecibido.producto },
+      { $set: {
+        estado: req.body.newEstado, 
+        provActual: req.body.proveedor,
+        precio: req.body.productoRecibido.precio,
+        unidadmedida: req.body.productoRecibido.unidadMedida
+       }, $pull: { pedidos: req.body.idPedido} },
+      (err, data) => { res.send( data ? data : err) }
+    )
+  }
+})
+
 
 app.post('/formulaAProductos', (req, res) => {
   // body { db: 'test', collection: 'productos', find: 'celulitis', formula: 'Celulitis' }
