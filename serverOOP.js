@@ -252,7 +252,7 @@ app.post('/borrarProductoPedido', (req, res) => {
 });
 
 app.post('/pedidoRecibido', (req, res) => {
-  logIp(req, '/borrarProductoPedido from IP:', req.body);
+  logIp(req, '/pedidoRecibido from IP:', req.body);
   if (!mongoCli){ connError(res)} else {
     mongoCli.db(req.body.db).collection(req.body.collection).updateOne(
       {_id: req.body.productoRecibido.producto },
