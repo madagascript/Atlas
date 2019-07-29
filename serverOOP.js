@@ -43,7 +43,7 @@ class App {
     if (!mongoCli){ connError(res) } else {    
       mongoCli.db(req.params.db).collection(req.params.collection)
         .findOne(
-          { _id: req.params.id }, 
+          { _id: new mongo.ObjectId(req.params.id) }, 
           (err, results) => { 
             res.send(results ? results : err);
           });  
@@ -131,7 +131,7 @@ console.log( 'conectando al Cluster: ', url.split('@')[1] )
 const port = process.argv[3] ? process.argv[3] : 3000
 var mongoCli = null;
 
-mongo.MongoClient.connect(url, (err, client) => {
+mongo.MongoClient.connect(url, { useNewUrlParser: true },  (err, client) => {
   if ( client ){ mongoCli = client}
   else { 
     console.log('hay un error en MongoClient.connect()');
